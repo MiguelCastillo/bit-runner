@@ -1,6 +1,6 @@
 var fs        = require('fs');
 var Bitloader = require('bit-loader');
-var Utils     = Bitloader.Utils;
+var util      = Bitloader.Utils;
 
 
 /**
@@ -31,7 +31,7 @@ function fetchFactory(loader) {
     fetch: function(name) {
       // Read file from disk and return a module meta
       return readFile(name)
-        .then(moduleMetaFactory, Utils.forwardError);
+        .then(moduleMetaFactory, util.forwardError);
     }
   };
 }

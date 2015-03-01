@@ -6,7 +6,7 @@ var taskRunner = require('bit-runner');
  */
 function jsPipeline(task) {
   task
-    .load('index.js')
+    .load('package.json')
     .then(function(moduleMeta) {
       console.log(moduleMeta);
     })
@@ -42,6 +42,5 @@ function minifyPipeline(task) {
 
 taskRunner
   .register('javascript', ['coffeescript', 'minify'], jsPipeline)
-  .register('coffeescript', coffeePipeline)
+  .register('coffeescript', ['minify'], coffeePipeline)
   .register('minify', minifyPipeline);
-
