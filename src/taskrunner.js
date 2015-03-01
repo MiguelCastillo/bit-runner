@@ -1,6 +1,8 @@
-var Task      = require('./task');
-var Bitloader = require('bit-loader');
-var Utils     = Bitloader.Utils;
+var Task         = require('./task');
+var fetchFactory = require('./fetch');
+var Bitloader    = require('bit-loader');
+var Utils        = Bitloader.Utils;
+var slice        = Array.prototype.slice;
 
 
 /**
@@ -13,8 +15,8 @@ function TaskRunner() {
 
   // Bind so that we do not lose the context
   this.register = register.bind(this);
-  this.run      = syncRun.bind(this);
-  this.deferred = asyncRun.bind(this);
+  this.run      = run.bind(this);
+  this.chain    = chain.bind(this);
 }
 
 
@@ -47,11 +49,13 @@ TaskRunner.prototype.run = function() {};
  *
  * @returns {Promise}
  */
-TaskRunner.prototype.deferred = function() {};
+TaskRunner.prototype.chain = function() {};
 
 
 /** @private */
 function register(name, deps, cb) {
+  var taskRunner = this;
+
   if (!Utils.isString(name)) {
     throw new TypeError('Must provide a name for the task');
   }
@@ -61,28 +65,36 @@ function register(name, deps, cb) {
     deps = [];
   }
 
-  this._tasks[name] = new Task(this, name, deps, cb);
+  if (this._tasks.hasOwnProperty(name)) {
+    throw new TypeError('Task "' + name + '" is already registered');
+  }
+
+  // Set a task factory
+  this._tasks[name] = function taskFactory(loader) {
+    return new Task(taskRunner, name, deps, cb, loader);
+  };
+
   return this;
 }
 
 
 /** @private */
-function syncRun() {
-  this.deferred.apply(this, arguments);
+function run() {
+  this.chain.apply(this, [new Bitloader({}, {fetch: fetchFactory})].concat(slice.call(arguments)));
   return this;
 }
 
 
 /** @private */
-function asyncRun(name) {
+function chain(loader, name) {
   var task = this._tasks[name];
 
   if (!task) {
     throw new TypeError('Task "' + name + '" not found');
   }
 
-  return task
-    .init(Array.prototype.slice.call(arguments, 1))
+  return task(loader)
+    .init(slice.call(arguments, 2))
     .run();
 }
 

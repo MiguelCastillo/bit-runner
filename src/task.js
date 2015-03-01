@@ -1,6 +1,5 @@
-var fetchFactory = require('./fetch');
-var Bitloader    = require('bit-loader');
-var Utils        = Bitloader.Utils;
+var Bitloader = require('bit-loader');
+var Utils     = Bitloader.Utils;
 
 
 /**
@@ -8,17 +7,12 @@ var Utils        = Bitloader.Utils;
  *
  * Task that can be executed by the task runner
  */
-function Task(taskrunner, name, deps, cb) {
-  var task  = this;
-  var src, loader;
+function Task(taskrunner, name, deps, cb, loader) {
+  var task = this;
+  var src;
 
   function init(args) {
-    if (loader) {
-      loader.clear();
-    }
-
-    loader = new Bitloader({}, {fetch: fetchFactory});
-    src    = [];
+    src = [];
 
     if (typeof(cb) === 'function') {
       cb.apply(task, [task].concat(args));
@@ -30,7 +24,7 @@ function Task(taskrunner, name, deps, cb) {
   function run() {
     if (deps.length) {
       var sequence = deps.reduce(function(runner, name) {
-          return runner.then(runDeferred(name), Utils.printError);
+          return runner.then(chainTask(name), Utils.printError);
         }, Bitloader.Promise.resolve());
 
       return sequence.then(function() {
@@ -54,9 +48,9 @@ function Task(taskrunner, name, deps, cb) {
     return task;
   }
 
-  function runDeferred(name) {
+  function chainTask(name) {
     return function() {
-      return taskrunner.deferred(name);
+      return taskrunner.chain(loader, name);
     };
   }
 
