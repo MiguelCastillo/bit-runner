@@ -48,3 +48,7 @@ bitrunner build
 ```
 
 You can call bitrunner with a list of registered tasks, in which case bit runner is going to run them all in parallel. Or if you don't provide a task name, then a `default` task is executed.
+
+
+### Examples
+Please see [examples](https://github.com/MiguelCastillo/bit-runner/tree/master/example) to see some examples.

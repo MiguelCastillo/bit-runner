@@ -4,7 +4,7 @@ var taskRunner = require('bit-runner');
 /**
  * JavaScript pipeline
  */
-function jsPipeline(task) {
+function buildPipeline(task) {
   task
     .load('package.json')
     .then(function(moduleMeta) {
@@ -19,7 +19,7 @@ function jsPipeline(task) {
 /**
  * CoffeeScript pipeline
  */
-function coffeePipeline(task) {
+function releasePipeline(task) {
   task
     .load('bitrunnerfile.js')
     .then(function(moduleMeta) {
@@ -41,6 +41,6 @@ function minifyPipeline(task) {
 
 
 taskRunner
-  .register('javascript', ['coffeescript', 'minify'], jsPipeline)
-  .register('coffeescript', ['minify'], coffeePipeline)
+  .register('build', ['print', 'minify'], buildPipeline)
+  .register('release', ['minify'], releasePipeline)
   .register('minify', minifyPipeline);
