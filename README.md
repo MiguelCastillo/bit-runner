@@ -1,15 +1,19 @@
 # bit-runner
-JS Task Runner that can be really easily configured to run complex sequences of tasks.
+JS Task Runner that's easily configured to run complex sequences of tasks.
 
 > The underlying engine is [bit loader](https://github.com/MiguelCastillo/bit-loader) to provide the *transformation* workflow.
 
 
 ### Summary
-bit runner primary goal is to executes tasks. But the pipeline that executes these tasks is optimaized to reduce I/O operations by piping data from one task to another.
+bit runner's primary goal is to executes tasks. But the pipeline that executes these tasks is optimaized to reduce I/O operations by piping data from one task to another.
 
 So, what is a task?  A task is a sequence of *actions* that are executed to process your assests. *You* define what these actions are. An action can be to simply add `use strict;` to your JavaScript.
 
-A task can also sepecify dependencies on other tasks.  This allows you to define a uniform task sequence that executes as a single unit. The output from one task is *piped* to the next task in the sequence to avoid unnecessary I/O.
+A task can also sepecify dependencies on other tasks.  This allows you to define a uniform *task sequence* that executes as a single unit, where the output from one task is *piped* to the next task in the sequence to reduce unnecessary I/O.
+
+An important feature of the ability to set dependencies is that you can piece together complex sequences of micro tasks - tasks that do small jobs. When a task is executed by the `cli`, its execution sequence is completely independent from other tasks' execution sequence. For example, you could run `bitrunner build`, and that task will run completely independent from `bitrunner release`, even if they have common task dependencies and they are executed simultaneously. This allows for elegant compositions of sequences of micro tasks.
+
+> Quick note: A task is what bit runner executes. Actions is what a task executes.  Bit runner executes a sequence of tasks, and a task executes a sequence of actions.
 
 
 #### Oversimplified illustration of a task sequence
@@ -37,13 +41,13 @@ First, you need to install *bit-runner* globally so that the bit-runner cli can 
 npm install bit-runner -g
 ```
 
-Now that you have the cli in your *PATH* you need bit-runner in each project you want bit runner setup.  So from your project's root directory:
+Now that you have the cli in your *PATH*, you need to install bit-runner in your project.  So from your project's root directory:
 ```
-npm install bit-runner
+npm install bit-runner --save-dev
 ```
 
-#### Config
-Bit runner uses `bitrunnerfile.js` to configure your tasks, and here is a basic one with a single task called `build`:
+#### Configuration
+When you execute bit runner's cli, it automatically loads `bitrunnerfile.js` from your project in order to load your tasks. Here is a basic configuration with a single task called `build`:
 
 ``` javascript
 var bitRunner = require('bit-runner');
@@ -66,13 +70,23 @@ bitRunner.register('build', buildPipeline);
 ```
 
 #### Running it
-Now that you have installed bit-runner, configured it in your probject, now you are ready to run it.  From your project's root directory:
+So, you have installed bit-runner and created a configuration in your project. Now you are ready to run your task(s). From your project's root directory:
 
 ```
 bitrunner build
 ```
 
-You can call bitrunner with a list of registered tasks, in which case bit runner is going to run them all in parallel. Or if you don't provide a task name, then the `default` task is executed.
+You can call bitrunner with a list of tasks, in which case bit runner is going to run them in parallel. Or if you don't provide a task name, then the `default` task is executed.
+
+The following will execute `build` and `docs` in parallel.
+```
+bitrunner build docs
+```
+
+The following will execute `default`
+```
+bitrunner
+```
 
 
 ### Examples
