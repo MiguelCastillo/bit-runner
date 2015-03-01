@@ -1,4 +1,4 @@
-var taskRunner = require('bit-runner');
+var bitRunner = require('bit-runner');
 
 
 /**
@@ -40,7 +40,8 @@ function minifyPipeline(task) {
 }
 
 
-taskRunner
-  .register('build', ['print', 'minify'], buildPipeline)
+bitRunner
+  .register('default', ['build'])
+  .register('build', ['release', 'minify'], buildPipeline)
   .register('release', ['minify'], releasePipeline)
   .register('minify', minifyPipeline);
