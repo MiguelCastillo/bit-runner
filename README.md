@@ -5,7 +5,7 @@ JS Task Runner that's easily configured to run complex sequences of tasks.
 
 
 ### Summary
-bit runner's primary goal is to executes tasks. But the pipeline that executes these tasks is optimaized to reduce I/O operations by piping data from one task to another.
+bit runner's primary goal is to executes tasks. But the pipeline that executes these tasks is optimized to reduce I/O operations by piping data from one task to another.
 
 So, what is a task?  A task is a sequence of *actions* that are executed to process your assests. *You* define what these actions are. An action can be to simply add `use strict;` to your JavaScript.
 
