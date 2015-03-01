@@ -4,10 +4,12 @@ A task can sepecify dependencies on other tasks in order to define a uniform tas
 This example will show you how you can define multiple tasks, and establish dependencies amongst them. The primary task is `build`, which has a dependency on `release` and `minify` (two artificial tasks). Furthermore, the `release` task has a dependency on `minify`.
 
 This setup will makes sure that before `build` runs, `release` and `minify` do.  And before `release` runs, `minify` does.  When you run the `build` task, this creates a sequence like this:
+
 1. `build` -> [`release`, `minify`]
 2. `release` -> `minify`
 
 The end result is executing the tasks in the following order:
+
 1. `minify`
 2. `release`
 3. `build`
