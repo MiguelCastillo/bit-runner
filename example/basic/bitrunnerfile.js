@@ -7,8 +7,14 @@ function buildPipeline(task) {
   task
     .load('index.js')
     .then(function(moduleMeta) {
-      moduleMeta.source = "'use strict;'\n" + moduleMeta.source;
+      console.log('Pre transform:\n', moduleMeta.source);
+    })
+    .then(function(moduleMeta) {
+      moduleMeta.source = '"use strict;"\n' + moduleMeta.source;
+    })
+    .then(function(moduleMeta) {
+      console.log('Post transform:\n', moduleMeta.source);
     });
 }
 
-taskRunner.register('build', buildPipeline);
+bitRunner.register('build', buildPipeline);
