@@ -6,7 +6,7 @@ Example showing how to add a [minify](https://github.com/mishoo/UglifyJS2#the-si
 ``` javascript
 var bitRunner = require('bit-runner');
 var babel     = require('babel-bits');
-var uglify    = require('uglify-js');
+var minify    = require('minify-bits');
 
 /**
  * JavaScript pipeline
@@ -20,17 +20,12 @@ bitRunner.register('default', function buildPipeline(task) {
     .then(printPostTransform);
 });
 
-
 function printPreTransform(moduleMeta) {
   console.log('Pre transform:\n', moduleMeta.source);
 }
 
 function printPostTransform(moduleMeta) {
   console.log('Post transform:\n', moduleMeta.source);
-}
-
-function minify(moduleMeta) {
-  moduleMeta.source = uglify.minify(moduleMeta.source, {fromString: true}).code;
 }
 ```
 
