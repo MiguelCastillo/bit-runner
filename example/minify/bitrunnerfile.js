@@ -10,7 +10,7 @@ bitRunner.register('default', function buildPipeline(task) {
     .load('index.js')
     .then(printPreTransform)
     .then(babel)
-    .then(minify)
+    .then(minify.config({sourceMap: true}))
     .then(printPostTransform);
 });
 

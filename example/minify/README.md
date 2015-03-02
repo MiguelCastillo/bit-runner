@@ -1,5 +1,5 @@
 # Minify example
-Example showing how to add a [minify](https://github.com/mishoo/UglifyJS2#the-simple-way) and a [babel](https://babeljs.io/) task to transform ES6 code to ES5 equivalent and then minifying it.
+Example showing how to add a [minify](https://github.com/mishoo/UglifyJS2#the-simple-way) and a [babel](https://babeljs.io/) task to transform ES6 code to ES5 equivalent, and then minifying it including source maps.
 
 ## bitrunnerconfig.js
 
@@ -16,7 +16,7 @@ bitRunner.register('default', function buildPipeline(task) {
     .load('index.js')
     .then(printPreTransform)
     .then(babel)
-    .then(minify)
+    .then(minify.config({sourceMap: true}))
     .then(printPostTransform);
 });
 
