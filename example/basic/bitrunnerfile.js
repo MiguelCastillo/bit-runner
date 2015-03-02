@@ -3,18 +3,23 @@ var bitRunner = require('bit-runner');
 /**
  * JavaScript pipeline
  */
-function buildPipeline(task) {
+bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
-    .then(function(moduleMeta) {
-      console.log('Pre transform:\n', moduleMeta.source);
-    })
-    .then(function(moduleMeta) {
-      moduleMeta.source = '"use strict;"\n' + moduleMeta.source;
-    })
-    .then(function(moduleMeta) {
-      console.log('Post transform:\n', moduleMeta.source);
-    });
+    .then(printPreTransform)
+    .then(addStrict)
+    .then(printPostTransform);
+});
+
+
+function printPreTransform(moduleMeta) {
+  console.log('Pre transform:\n', moduleMeta.source);
 }
 
-bitRunner.register('build', buildPipeline);
+function printPostTransform(moduleMeta) {
+  console.log('Post transform:\n', moduleMeta.source);
+}
+
+function addStrict(moduleMeta) {
+  moduleMeta.source = '"use strict;"\n' + moduleMeta.source;
+}

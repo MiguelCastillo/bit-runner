@@ -16,6 +16,54 @@ The end result is executing the tasks in the following order:
 
 One thing that is important to note is that registered tasks can be chained in any way you need. And when a task is executed by the `cli`, their execution sequence is completely independent from other tasks' execution sequence.  For example, you could run `bitrunner build`, and that task will run completely independent from the `bitrunner release`.  This allows maximum reuse of tasks where you can create a bunch little micro tasks that you chain together in whatever way you need.
 
+## bitrunnerconfig.js
+
+``` javascript
+var bitRunner = require('bit-runner');
+
+/**
+ * JavaScript pipeline
+ */
+function buildPipeline(task) {
+  task
+    .load('package.json')
+    .then(function(moduleMeta) {
+      console.log(moduleMeta);
+    })
+    .then(function(moduleMeta) {
+      console.log(moduleMeta);
+    });
+}
+
+/**
+ * CoffeeScript pipeline
+ */
+function releasePipeline(task) {
+  task
+    .load('bitrunnerfile.js')
+    .then(function(moduleMeta) {
+      console.log(moduleMeta);
+    });
+}
+
+/**
+ * Minify pipeline
+ */
+function minifyPipeline(task) {
+  task
+    .load('.jshintrc')
+    .then(function(moduleMeta) {
+      console.log(moduleMeta);
+    });
+}
+
+bitRunner
+  .register('default', ['build'])
+  .register('build', ['release', 'minify'], buildPipeline)
+  .register('release', ['minify'], releasePipeline)
+  .register('minify', minifyPipeline);
+```
+
 #### run it
 From example/dependencies directory
 
