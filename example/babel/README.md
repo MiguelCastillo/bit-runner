@@ -6,9 +6,9 @@ The bitrunner config file has a `default` task that just runs `build`
 ## bitrunnerconfig.js
 
 ``` javascript
-var bitRunner      = require('bit-runner');
-var babelTransform = require('babel-bits');
-var addStrict      = require('./add-strict');
+var bitRunner = require('bit-runner');
+var babel     = require('babel-bits');
+var addStrict = require('./add-strict');
 
 /**
  * JavaScript pipeline
@@ -18,7 +18,7 @@ bitRunner.register('build', function buildPipeline(task) {
     .load('index.js')
     .then(printPreTransform)
     .then(addStrict)
-    .then(babelTransform)
+    .then(babel)
     .then(printPostTransform);
 });
 
