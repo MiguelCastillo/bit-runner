@@ -1,7 +1,7 @@
 {
   "name": "bit-runner",
   "version": "0.0.3",
-  "description": "JavaScript task runner with a fluent workflow for processing your assests",
+  "description": "JavaScript Task Runner that's easily configured to run complex sequences of tasks in nodejs",
   "author": "Miguel Castillo <manchagnu@gmail.com>",
   "main": "src/taskrunner.js",
   "bin": {
@@ -12,6 +12,11 @@
     "type": "git",
     "url": "https://github.com/MiguelCastillo/bit-runner.git"
   },
+  "keywords": [
+    "bit-runner",
+    "bit runner",
+    "task runner"
+  ],
   "dependencies": {
     "minimist": "~1.1.0",
     "liftoff": "~2.0.2",

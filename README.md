@@ -1,5 +1,5 @@
 # bit-runner
-JS Task Runner that's easily configured to run complex sequences of tasks.
+JavaScript Task Runner that's easily configured to run complex sequences of tasks.
 
 > The underlying engine is [bit loader](https://github.com/MiguelCastillo/bit-loader) to provide the *transformation* workflow.
 
