@@ -9,6 +9,6 @@ class Person {
   }
 }
 
-let brian = new Person('Miguel', 'Castillo');
+let miguel = new Person('Miguel', 'Castillo');
 
-export default brian;
+export default miguel;
