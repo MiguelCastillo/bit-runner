@@ -4,7 +4,7 @@ This will show you a really basic example where we are defining a task that adds
 
 ## bitrunnerconfig.js
 
-```
+``` javascript
 var bitRunner = require('bit-runner');
 
 /**
