@@ -1,0 +1,16 @@
+{
+  "name": "minify",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Castillo <manchagnu@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bit-runner": "~0.0.1",
+    "babel-bits": "0.0.9",
+    "uglify-js": "~2.4.16"
+  }
+}
