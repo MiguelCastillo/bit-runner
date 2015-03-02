@@ -46,27 +46,29 @@ Now that you have the cli in your *PATH*, you need to install bit-runner in your
 npm install bit-runner --save-dev
 ```
 
-#### Configuration
+#### Configuration `bitrunnerfile.js`
 When you execute bit runner's cli, it automatically loads `bitrunnerfile.js` from your project in order to load your tasks. Here is a basic configuration with a single task called `build`:
 
 ``` javascript
-var bitRunner = require('bit-runner');
+var bitRunner      = require('bit-runner');
+var babelTransform = require('babel-bits');
 
 /**
- * JavaScript pipeline
+ * JavaScript build pipeline
  */
-function buildPipeline(task) {
+bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
-    .then(function action(moduleMeta) {
-      moduleMeta.source = "'use strict;'\n" + moduleMeta.source;
-    })
-    .then(function action(moduleMeta) {
-      moduleMeta.source = coffeescript.compile(moduleMeta.source);
-    });
-}
+    .then(addStrict)
+    .then(babelTransform);
+});
 
-bitRunner.register('build', buildPipeline);
+/**
+ * Sample action. The `source` property is generally what actions operate on.
+ */
+function addStrict(moduleMeta) {
+  moduleMeta.source = "'use strict;'\n" + moduleMeta.source;
+}
 ```
 
 #### Running it
