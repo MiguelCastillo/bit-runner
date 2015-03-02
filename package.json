@@ -1,6 +1,6 @@
 {
   "name": "bit-runner",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "JavaScript Task Runner that's easily configured to run complex sequences of tasks in nodejs",
   "author": "Miguel Castillo <manchagnu@gmail.com>",
   "main": "src/taskrunner.js",
