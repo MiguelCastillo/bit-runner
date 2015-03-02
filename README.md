@@ -50,8 +50,8 @@ npm install bit-runner --save-dev
 When you execute bit runner's cli, it automatically loads `bitrunnerfile.js` from your project in order to load your tasks. Here is a basic configuration with a single task called `build`:
 
 ``` javascript
-var bitRunner      = require('bit-runner');
-var babelTransform = require('babel-bits');
+var bitRunner = require('bit-runner');
+var babel     = require('babel-bits');
 
 /**
  * JavaScript build pipeline
@@ -60,7 +60,7 @@ bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
     .then(addStrict)
-    .then(babelTransform);
+    .then(babel);
 });
 
 /**
