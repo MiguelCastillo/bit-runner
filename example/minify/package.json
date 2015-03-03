@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "bit-runner": "~0.0.1",
-    "babel-bits": "0.0.9",
-    "uglify-js": "~2.4.16"
+    "babel-bits": "~0.0.12",
+    "minify-bits": "~0.0.4"
   }
 }
