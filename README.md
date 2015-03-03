@@ -100,3 +100,64 @@ Please see [examples](https://github.com/MiguelCastillo/bit-runner/tree/master/e
 
 ### Plugins
 You can click [here](https://www.npmjs.com/browse/keyword/bit-runner) to see a list of bit runner plugins.
+
+### Authoring plugins
+
+So, what is a plugin? A plugin is basically a function that is called by bit runner. bit runner passes in data that needs processing to each plugin. In general, the item of interest in the data passed in is the `source` property. And that's because that's the *content* that has been loaded from storage.
+
+When writing a plugin, keep in mind the basic rule that plugins are small units of work. Meaning, don't over complicate a plugin by overloading it with functionality that could be otherwise broken out into smaller plugins.
+
+A *very* basic plugin has the following structure:
+
+``` javascript
+function foo(data) {
+  console.log(data);
+}
+
+module.exports = foo;
+```
+
+And you would use it as follows:
+
+``` javascript
+var foo = require('foo')
+
+taskRunner.register('default', function(task) {
+  task.then(foo);
+});
+```
+
+If you need to provide a way to configure the plugin, the following structure is suggested:
+
+``` javascript
+function foo(data) {
+  _run(data, {});
+}
+
+foo.config = function(options) {
+  return function fooDelegate(data) {
+    _run(data, options);
+  };
+};
+
+function _run(data, options) {
+  // Do what you need to here
+  console.log(data, options);
+}
+
+module.exports = foo;
+```
+
+Returning the delegate might seem a bit odd. But it makes the plugin a bit cleaner when it is used.
+
+``` javascript
+var foo = require('foo')
+
+taskRunner.register('default', function(task) {
+  task.then(foo.config({hello: world}));
+});
+```
+
+You can take a look at [this one](https://github.com/MiguelCastillo/minify-bits/blob/master/index.js) to get an idea of what a full plugin looks like.
+
+> bit runner plugins are actually [bit loader](https://github.com/MiguelCastillo/bit-loader) *transforms*.  So you can generally use a bit loader transform as a bit runner task action.
