@@ -11,21 +11,23 @@ var minify    = require('minify-bits');
 /**
  * JavaScript pipeline
  */
-bitRunner.register('default', function buildPipeline(task) {
+bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
-    .then(printPreTransform)
-    .then(babel)
-    .then(minify.config({sourceMap: true}))
-    .then(printPostTransform);
+    .action(printPreTransform)
+    .action(babel)
+    .action(minify.config({sourceMap: true}))
+    .action(printPostTransform);
 });
 
-function printPreTransform(moduleMeta) {
-  console.log('Pre transform:\n', moduleMeta.source);
+bitRunner.register('default', ['build']);
+
+function printPreTransform(data) {
+  console.log('Pre transform:\n', data.source);
 }
 
-function printPostTransform(moduleMeta) {
-  console.log('Post transform:\n', moduleMeta.source);
+function printPostTransform(data) {
+  console.log('Post transform:\n', data.source);
 }
 ```
 

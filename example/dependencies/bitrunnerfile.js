@@ -7,11 +7,11 @@ var bitRunner = require('bit-runner');
 function buildPipeline(task) {
   task
     .load('package.json')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     })
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
 
@@ -22,8 +22,8 @@ function buildPipeline(task) {
 function releasePipeline(task) {
   task
     .load('bitrunnerfile.js')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
 
@@ -34,8 +34,8 @@ function releasePipeline(task) {
 function minifyPipeline(task) {
   task
     .load('.jshintrc')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
 

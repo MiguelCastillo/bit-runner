@@ -21,7 +21,7 @@ function Task(name, deps, cb, parent, root) {
   this.init    = init.bind(this);
   this.run     = run.bind(this);
   this.load    = load.bind(this);
-  this.then    = then.bind(this);
+  this.action  = action.bind(this);
 
   function run() {
     init().then(exec);
@@ -36,7 +36,7 @@ function Task(name, deps, cb, parent, root) {
     return task;
   }
 
-  function then(cb) {
+  function action(cb) {
     // This is a transform accumulator
     loader.transform.use(cb);
     return task;
