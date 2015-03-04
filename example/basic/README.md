@@ -13,22 +13,22 @@ var bitRunner = require('bit-runner');
 bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
-    .then(printPreTransform)
-    .then(addStrict)
-    .then(printPostTransform);
+    .action(printPreTransform)
+    .action(addStrict)
+    .action(printPostTransform);
 });
 
 
-function printPreTransform(moduleMeta) {
-  console.log('Pre transform:\n', moduleMeta.source);
+function printPreTransform(data) {
+  console.log('Pre transform:\n', data.source);
 }
 
-function printPostTransform(moduleMeta) {
-  console.log('Post transform:\n', moduleMeta.source);
+function printPostTransform(data) {
+  console.log('Post transform:\n', data.source);
 }
 
-function addStrict(moduleMeta) {
-  moduleMeta.source = '"use strict;"\n' + moduleMeta.source;
+function addStrict(data) {
+  data.source = '"use strict;"\n' + data.source;
 }
 ```
 

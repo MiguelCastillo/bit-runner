@@ -8,10 +8,10 @@ var addStrict = require('./add-strict');
 bitRunner.register('build', function buildPipeline(task) {
   task
     .load('index.js')
-    .then(printPreTransform)
-    .then(addStrict)
-    .then(babel)
-    .then(printPostTransform);
+    .action(printPreTransform)
+    .action(addStrict)
+    .action(babel)
+    .action(printPostTransform);
 });
 
 
@@ -19,10 +19,10 @@ bitRunner.register('build', function buildPipeline(task) {
 bitRunner.register('default', ['build']);
 
 
-function printPreTransform(moduleMeta) {
-  console.log('Pre transform:\n', moduleMeta.source);
+function printPreTransform(data) {
+  console.log('Pre transform:\n', data.source);
 }
 
-function printPostTransform(moduleMeta) {
-  console.log('Post transform:\n', moduleMeta.source);
+function printPostTransform(data) {
+  console.log('Post transform:\n', data.source);
 }
