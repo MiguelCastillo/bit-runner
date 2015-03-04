@@ -21,19 +21,21 @@ One thing that is important to note is that registered tasks can be chained in a
 ``` javascript
 var bitRunner = require('bit-runner');
 
+
 /**
  * JavaScript pipeline
  */
 function buildPipeline(task) {
   task
     .load('package.json')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     })
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
+
 
 /**
  * CoffeeScript pipeline
@@ -41,10 +43,11 @@ function buildPipeline(task) {
 function releasePipeline(task) {
   task
     .load('bitrunnerfile.js')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
+
 
 /**
  * Minify pipeline
@@ -52,10 +55,11 @@ function releasePipeline(task) {
 function minifyPipeline(task) {
   task
     .load('.jshintrc')
-    .then(function(moduleMeta) {
-      console.log(moduleMeta);
+    .action(function(data) {
+      console.log(data);
     });
 }
+
 
 bitRunner
   .register('default', ['build'])
