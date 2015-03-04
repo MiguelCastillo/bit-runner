@@ -1,5 +1,5 @@
 # bit-runner
-> JavaScript Task Runner to build and run pipeline (task sequences).
+> JavaScript task runner for configuring and running asset pipelines
 
 bit-runner's primary goal is to execute tasks, and the engine that executes these tasks is optimized to reduce I/O operations by piping data from one task to another.
 
