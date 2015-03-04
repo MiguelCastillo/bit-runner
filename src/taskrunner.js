@@ -1,4 +1,3 @@
-var factory   = require('./factory');
 var Task      = require('./task');
 var Bitloader = require('bit-loader');
 var util      = Bitloader.Utils;
@@ -7,11 +6,11 @@ var util      = Bitloader.Utils;
 /**
  * @class
  *
+ * @classdesc
  * Interface for registering and running tasks
  */
 function TaskRunner() {
-  this._tasks   = {};
-  this._factory = {};
+  this._tasks = {};
 
   // Bind so that we do not lose the context
   this.register = register.bind(this);
@@ -40,17 +39,6 @@ TaskRunner.prototype.register = function() {};
 TaskRunner.prototype.run = function() {};
 
 
-/**
- * Method to run a subtask task and return a promise that will be resolved when the
- * subtask is finished
- *
- * @param {string} name - Name of the task to run
- *
- * @returns {Promise}
- */
-TaskRunner.prototype.subtask = function() {};
-
-
 /** @private */
 function register(name, deps, cb) {
   if (!util.isString(name)) {
@@ -74,5 +62,6 @@ function run(name) {
   task.run();
   return this;
 }
+
 
 module.exports = new TaskRunner();
