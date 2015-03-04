@@ -1,3 +1,4 @@
+var factory      = require('./factory');
 var fetchFactory = require('./fetch');
 var Bitloader    = require('bit-loader');
 var util         = Bitloader.Utils;
@@ -8,13 +9,13 @@ var util         = Bitloader.Utils;
  *
  * Task that can be executed by the task runner
  */
-function Task(taskrunner, name, deps, cb, parent) {
+function Task(name, deps, cb, parent, root) {
   var task   = this;
   var loader = (parent && parent._loader) || new Bitloader({}, {fetch: fetchFactory});
-  var src;
+  root = root || this;
 
   this._loader = loader;
-  this._parent = parent;
+  this._src    = [];
   this._tasks  = {};
   this.name    = name;
   this.init    = init.bind(this);
@@ -22,69 +23,58 @@ function Task(taskrunner, name, deps, cb, parent) {
   this.load    = load.bind(this);
   this.then    = then.bind(this);
 
-  // Make sure to tell the parent we are their child!
-  if (parent) {
-    parent.setTask(name, this);
-  }
-
-
-  function init(args) {
-    src = [];
-
-    if (typeof(cb) === 'function') {
-      cb.apply(task, [task].concat(args));
-    }
-
-    return task;
-  }
-
   function run() {
-    if (deps.length) {
-      var sequence = deps.reduce(function(runner, name) {
-          return runner.then(subtask(name), util.printError);
-        }, Bitloader.Promise.resolve());
-
-      return sequence.then(function() {
-          if (src.length) {
-            return loader.import(src);
-          }
-        }, util.printError);
-    }
-    else if (src.length) {
-      return loader.import(src);
-    }
+    init().then(exec);
   }
 
-  function load() {
-    src = src.concat.apply(src, arguments);
+  function load(src) {
+    // This is basically a source accumulator
+    src = typeof(src) === 'string' ? [src] : src;
+    if (src && src.length) {
+      root._src = root._src.concat.apply(root._src, arguments);
+    }
     return task;
   }
 
   function then(cb) {
+    // This is a transform accumulator
     loader.transform.use(cb);
     return task;
   }
 
+  function exec() {
+    if (root._src.length) {
+      return loader.import(root._src);
+    }
+  }
+
+  function init() {
+    return buildTree().then(function taskCallback() {
+      if (typeof(cb) === 'function') {
+        return cb.call(task, task);
+      }
+    });
+  }
+
+  function buildTree() {
+    if (!deps.length) {
+      return Bitloader.Promise.resolve();
+    }
+
+    return deps.reduce(function dep(deferredTask, name) {
+      return deferredTask.then(subtask(name), util.printError);
+    }, Bitloader.Promise.resolve());
+  }
+
   function subtask(name) {
-    return function() {
-      return taskrunner.subtask(name, task);
+    return function substaskrunning() {
+      if (root._tasks.hasOwnProperty(name)) {
+        return Bitloader.Promise.resolve();
+      }
+      return (root._tasks[name] = Task.create(name, task, root)).init();
     };
   }
 }
-
-
-Task.prototype.getTask = function(name) {
-  return this._tasks[name];
-};
-
-
-Task.prototype.setTask = function(name, task) {
-  if (this._tasks[name]) {
-    throw new TypeError('Subtask "' + name + '" already exists');
-  }
-
-  this._tasks[name] = task;
-};
 
 
 Task.prototype.init = function() {};
@@ -92,5 +82,15 @@ Task.prototype.run  = function() {};
 Task.prototype.load = function() {};
 Task.prototype.then = function() {};
 
+
+Task.factory = function(name, deps, cb) {
+  factory(name, function taskFactory(parent, root) {
+    return new Task(name, deps, cb, parent, root);
+  });
+};
+
+Task.create = function(name, parent, root) {
+  return factory.create(name, parent, root);
+};
 
 module.exports = Task;

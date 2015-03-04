@@ -1,7 +1,7 @@
+var factory   = require('./factory');
 var Task      = require('./task');
 var Bitloader = require('bit-loader');
 var util      = Bitloader.Utils;
-var slice     = Array.prototype.slice;
 
 
 /**
@@ -15,8 +15,7 @@ function TaskRunner() {
 
   // Bind so that we do not lose the context
   this.register = register.bind(this);
-  this.run      = runtask.bind(this);
-  this.subtask  = runsubtask.bind(this);
+  this.run      = run.bind(this);
 }
 
 
@@ -63,58 +62,17 @@ function register(name, deps, cb) {
     deps = [];
   }
 
-  if (this._factory.hasOwnProperty(name)) {
-    throw new TypeError('Task "' + name + '" is already registered');
-  }
-
   // Set a task factory
-  this._factory[name] = taskFactory.call(this, name, deps, cb);
+  Task.factory(name, deps, cb);
   return this;
 }
 
 
 /** @private */
-function runtask(name) {
-  var task = this._tasks[name] || (this._tasks[name] = createTask.call(this, name));
-  _run(task, slice.call(arguments, 1));
+function run(name) {
+  var task = this._tasks[name] || (this._tasks[name] = Task.create(name));
+  task.run();
   return this;
 }
-
-
-/** @private */
-function runsubtask(name, parent) {
-  var subtask = parent.getTask(name) || createTask.call(this, name, parent);
-  return _run(subtask, slice.call(arguments, 2));
-}
-
-
-/** @private */
-function _run(task) {
-  return task
-    .init(slice.call(arguments, 1))
-    .run();
-}
-
-
-/** @private */
-function createTask(name, parent) {
-  var factory = this._factory.hasOwnProperty(name);
-
-  if (!factory) {
-    throw new TypeError('Task "' + name + '" has not yet been registered');
-  }
-
-  return this._factory[name](parent);
-}
-
-
-/** @private */
-function taskFactory(name, deps, cb) {
-  var taskRunner = this;
-  return function factory(parent) {
-    return new Task(taskRunner, name, deps, cb, parent);
-  };
-}
-
 
 module.exports = new TaskRunner();
